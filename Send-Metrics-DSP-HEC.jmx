@@ -76,7 +76,8 @@
     &quot;time&quot;: ${__time},&#xd;
     &quot;source&quot;: &quot;cpu&quot;,&#xd;
     &quot;host&quot;: &quot;host${__threadNum}&quot;,&#xd;
-    &quot;event&quot;: {&#xd;
+    &quot;event&quot;: &quot;metric&quot;,&#xd;
+    &quot;fields&quot;: {&#xd;
         &quot;metric_name:cpu.busy&quot;:${cpu_busy},&#xd;
         &quot;metric_name:cpu.sys&quot;:${cpu_sys},&#xd;
         &quot;metric_name:disk.iops&quot;:${disk_iops},&#xd;
