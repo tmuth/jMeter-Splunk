@@ -1,0 +1,6 @@
+| mstats max(_value) prestats=true WHERE metric_name="jmeter.samplers.pct95" AND index="jmeter-metrics" AND type="ok" span=5s BY sampler
+| timechart max(_value) span=5s agg=max limit=50 useother=false BY sampler
+| fields - _span*
+
+# metric names and dimensions
+| mcatalog values(metric_name),values(_dims) WHERE index=jmeter-metrics
