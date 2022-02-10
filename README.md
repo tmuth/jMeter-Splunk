@@ -11,3 +11,4 @@ jMeter examples to load-test Splunk
 - jMeter-Splunk-vm-io-test.jmx - This test plan sends Splunk searches as REST calls to load-test a Splunk deployment
 - HEC-Metrics.jmx - This test plan sends data to Splunk in the form of a metrics V3 (Splunk 8.0+) HEC payload. 
 - Send-Metrics-DSP-HEC.jmx - Similar to the HEC-Metrics test plan with a slight modification to send to DSP via HEC
+- access-combined-jMeter-Splunk.jmx - This sends buttercup games data in access_combined format via HEC
