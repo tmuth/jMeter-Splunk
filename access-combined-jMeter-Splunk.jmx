@@ -18,7 +18,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">100</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">5</stringProp>
+        <stringProp name="ThreadGroup.num_threads">25</stringProp>
         <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -47,8 +47,8 @@ vars.put(&apos;jSessionId&apos;,jSessionId);</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
             <stringProp name="script">vars.put(&apos;httpBytes&apos;, org.apache.commons.lang3.RandomUtils.nextInt(100,9000).toString());
+
 String curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,,,)}&quot;;
-//def curTimestamp=new Date().format(&quot;dd/MM/yyyy:HH:mm:ss&quot;)
 vars.put(&apos;requestTimestamp&apos;,curTimestamp);
 </stringProp>
           </JSR223Sampler>
@@ -149,14 +149,16 @@ getRandomVar(userAgentOptions,&apos;userAgent&apos;);
 	//log.info(&quot;Selected: &quot;+ list[varIdx]);
 }
 
+
+// This is a map of the HTTP status code and the weight to apply to it in the distribution of data
 def statusMap = [
         200 	: 95,
         503	: 2,
         404 	: 1
 ]
-
 getWeightedRandomVar(statusMap,&apos;httpStatus&apos;);
 
+// This is a map of the referer URL and the weight to apply to it in the distribution of data
 def refererMap = [
         &quot;http://www.buttercupgames.com&quot; 	: 80,
         &quot;http://www.google.com&quot;			: 10,
@@ -194,8 +196,6 @@ getWeightedRandomVar(refererMap,&apos;httpReferer&apos;);
 		    count++;
 		 }
 	}
-
-
 	//log.info(&quot;List: &quot;+ list);
 	varIdx = org.apache.commons.lang3.RandomUtils.nextInt(0,list.size());
 	vars.put(outputVar, list[varIdx]);
@@ -211,7 +211,7 @@ def uriPathMap = [
 ]
 
 getWeightedRandomVar(uriPathMap,&apos;uriPath&apos;);
-fullUri=&quot;/&quot;+ vars.get(&quot;uriPath&quot;)+&quot;&amp;JSESSIONID=&quot;+vars.get(&quot;jSessionId&quot;);
+fullUri=&quot;/&quot;+ vars.get(&quot;uriPath&quot;)+&quot;?JSESSIONID=&quot;+vars.get(&quot;jSessionId&quot;);
 //log.info(&quot;fullUri: &quot;+ fullUri);
 vars.put(&apos;uriPath&apos;,fullUri);
 //vars.put(uriPath, &quot;/&quot;+ vars.get(&quot;uriPath&quot;)+&quot;&amp;JSESSIONID=&quot;+vars.get(&quot;jSessionId&quot;));
