@@ -16,9 +16,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">100</stringProp>
+          <stringProp name="LoopController.loops">10</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">25</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -42,6 +42,29 @@ vars.put(&apos;jSessionId&apos;,jSessionId);</stringProp>
           </JSR223Sampler>
           <hashTree/>
           <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Simple Random Variables" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">vars.put(&apos;httpBytes&apos;, org.apache.commons.lang3.RandomUtils.nextInt(100,9000).toString());
+
+String randomVar = &quot;${__RandomString(1,01)}&quot;;
+//log.info(&quot;*** RandomVar: &quot;+randomVar);
+String curTimestamp = &quot;&quot;;
+if (randomVar == &quot;0&quot;) { 
+//	log.info(&quot;*** RandomVar Zero: &quot;+randomVar);
+	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,,,)}&quot;;
+} else {
+//	log.info(&quot;*** RandomVar One: &quot;+randomVar);
+	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,-P1D,,)}&quot;;
+}
+//log.info(&quot;*** Timestamp : &quot;+ curTimestamp);
+//String curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,,,)}&quot;;
+vars.put(&apos;requestTimestamp&apos;,curTimestamp);
+</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Simple Random Variables" enabled="false">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -163,7 +186,10 @@ def refererMap = [
         &quot;http://www.buttercupgames.com&quot; 	: 80,
         &quot;http://www.google.com&quot;			: 10,
         &quot;http://www.yahoo.com&quot; 			: 6,
-        &quot;http://www.bing.com&quot;				: 4
+        &quot;http://www.bing.com&quot;				: 4,
+        &quot;http://splunk.com&quot;				: 30,
+        &quot;http://olympics.com&quot;				: 10
+        
 ]
 
 getWeightedRandomVar(refererMap,&apos;httpReferer&apos;);
@@ -248,7 +274,7 @@ vars.put(&apos;uriPath&apos;,fullUri);
             <stringProp name="TestPlan.comments">This is the section that actually performs the post to the Splunk HTTP Event Collector</stringProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
+          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
             <boolProp name="displayJMeterProperties">false</boolProp>
             <boolProp name="displayJMeterVariables">true</boolProp>
             <boolProp name="displaySystemProperties">false</boolProp>
@@ -272,6 +298,13 @@ vars.put(&apos;uriPath&apos;,fullUri);
             </elementProp>
           </collectionProp>
         </HeaderManager>
+        <hashTree/>
+        <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="true">
+          <boolProp name="displayJMeterProperties">false</boolProp>
+          <boolProp name="displayJMeterVariables">true</boolProp>
+          <boolProp name="displaySamplerProperties">true</boolProp>
+          <boolProp name="displaySystemProperties">false</boolProp>
+        </DebugPostProcessor>
         <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -309,13 +342,6 @@ vars.put(&apos;uriPath&apos;,fullUri);
           </objProp>
           <stringProp name="filename"></stringProp>
         </ResultCollector>
-        <hashTree/>
-        <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="false">
-          <boolProp name="displayJMeterProperties">false</boolProp>
-          <boolProp name="displayJMeterVariables">true</boolProp>
-          <boolProp name="displaySamplerProperties">true</boolProp>
-          <boolProp name="displaySystemProperties">false</boolProp>
-        </DebugPostProcessor>
         <hashTree/>
       </hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Splunk Host Variables" enabled="true">
