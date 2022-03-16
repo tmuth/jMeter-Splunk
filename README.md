@@ -1,5 +1,5 @@
 # jMeter-Splunk
-jMeter examples to load-test Splunk
+jMeter examples to load-test Splunk or send sample data to Splunk via HEC
 
 - Download and install Apache jMeter https://jmeter.apache.org/
 - Open the .jmx file with the jMeter GUI
