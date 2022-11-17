@@ -16,9 +16,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1000</stringProp>
+          <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.num_threads">5</stringProp>
         <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -31,40 +31,69 @@
           <boolProp name="TransactionController.parent">false</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get JSessionID" enabled="true">
-            <stringProp name="scriptLanguage">groovy</stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">String jSessionId = &quot;${__RandomString(10,qwertyuiopasdfghjklzxcvbnm1234567890)}&quot;;
-//log.info(&quot;jSessionId: &quot; + jSessionId );
-vars.put(&apos;jSessionId&apos;,jSessionId);</stringProp>
-          </JSR223Sampler>
-          <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Simple Random Variables" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set -  Simple Random Variables - last n days" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
             <stringProp name="script">vars.put(&apos;httpBytes&apos;, org.apache.commons.lang3.RandomUtils.nextInt(100,9000).toString());
 
-String randomVar = &quot;${__RandomString(1,01)}&quot;;
-//log.info(&quot;*** RandomVar: &quot;+randomVar);
+// Randomly flip between 1 day in the past and 1 day in the future
+//String randomVar = &quot;${__RandomString(1,01)}&quot;;
+Integer randomInt = ${__Random(0,30)}
 String curTimestamp = &quot;&quot;;
+//${__timeShift(dd/MM/yyyy\:HH\:mm\:ss,,-P1D,,curTimestamp)};
+
+curTimestamp=&quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,-P${__Random(0,30)}D,,)}&quot;
+log.info(&quot;*** Cur Timestamp : &quot;+ curTimestamp);
+/*
+
 if (randomVar == &quot;0&quot;) { 
-	log.info(&quot;*** RandomVar Zero: &quot;+randomVar);
+	//log.info(&quot;*** RandomVar Zero: &quot;+randomVar);
 	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,P1D,,)}&quot;;
 } else {
-	log.info(&quot;*** RandomVar One: &quot;+randomVar);
+//	log.info(&quot;*** RandomVar One: &quot;+randomVar);
 	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,-P1D,,)}&quot;;
 }
 //log.info(&quot;*** Timestamp : &quot;+ curTimestamp);
-//String curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,,,)}&quot;;
+curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,,,)}&quot;;
+*/
 vars.put(&apos;requestTimestamp&apos;,curTimestamp);
-</stringProp>
+
+String jSessionId = &quot;${__RandomString(10,qwertyuiopasdfghjklzxcvbnm1234567890)}&quot;;
+//log.info(&quot;jSessionId: &quot; + jSessionId );
+vars.put(&apos;jSessionId&apos;,jSessionId);</stringProp>
+            <stringProp name="TestPlan.comments">Variables: </stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Simple Random Variables" enabled="false">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set -  Simple Random Variables - timestamp flip" enabled="false">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">vars.put(&apos;httpBytes&apos;, org.apache.commons.lang3.RandomUtils.nextInt(100,9000).toString());
+
+// Randomly flip between 1 day in the past and 1 day in the future
+String randomVar = &quot;${__RandomString(1,01)}&quot;;
+String curTimestamp = &quot;&quot;;
+if (randomVar == &quot;0&quot;) { 
+	//log.info(&quot;*** RandomVar Zero: &quot;+randomVar);
+	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,P1D,,)}&quot;;
+} else {
+//	log.info(&quot;*** RandomVar One: &quot;+randomVar);
+	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,-P1D,,)}&quot;;
+}
+//log.info(&quot;*** Timestamp : &quot;+ curTimestamp);
+curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,,,)}&quot;;
+vars.put(&apos;requestTimestamp&apos;,curTimestamp);
+
+String jSessionId = &quot;${__RandomString(10,qwertyuiopasdfghjklzxcvbnm1234567890)}&quot;;
+//log.info(&quot;jSessionId: &quot; + jSessionId );
+vars.put(&apos;jSessionId&apos;,jSessionId);</stringProp>
+            <stringProp name="TestPlan.comments">Variables: </stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set  - Simple Random Variables" enabled="false">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -76,12 +105,15 @@ vars.put(&apos;requestTimestamp&apos;,curTimestamp);
 </stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Common Variables from lists" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set - Common Variables from lists" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">def getRandomVar(varOptions,outputVar) { 
+            <stringProp name="script">import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.net.URLCodec;
+
+def getRandomVar(varOptions,outputVar) { 
    	varIdx = org.apache.commons.lang3.RandomUtils.nextInt(0,varOptions.size());
    	vars.put(outputVar, varOptions[varIdx]);
    	//log.info &apos;======&apos;;
@@ -117,10 +149,39 @@ def ipList = ipArrList.toList()
 getRandomVar(ipList,&apos;sourceIP&apos;);
 // IP Address End
 
+// Credentials Start
+randomVar = org.apache.commons.lang3.RandomUtils.nextInt(1,11);
+log.info(&quot;*** RandomVar: &quot;+randomVar);
+
+// If you don&apos;t define them here, they get defined with scope just inside the &quot;if&quot; below
+vars.put(&apos;credentials&apos;,&quot;&quot;);
+vars.put(&apos;userName&apos;,&quot;&quot;);
+if (randomVar == 1) { 
+	log.info(&quot;*** RandomVar One: &quot;+randomVar);
+	String[] uernameOptions  = [&apos;nervousgovernor&apos;,&apos;interprethart&apos;,&apos;stanedmangoes&apos;,&apos;thirstyenable&apos;,&apos;vaguepuzzled&apos;,&apos;diligencedrop&apos;,
+						   &apos;throughoutlion&apos;,&apos;clamourthumbsup&apos;,&apos;eatablesparkle&apos;,&apos;musicianthin&apos;,&apos;artichokedecay&apos;,
+						   &apos;podexit&apos;,&apos;presenceartistic&apos;]
+
+	getRandomVar(uernameOptions,&apos;userName&apos;);
+	log.info(&quot;*** userName: &quot;+vars.get(&apos;userName&apos;));
+	String password = &quot;${__RandomString(10,qwertyuiopasdfghjklzxcvbnm1234567890)}&quot;;
+	log.info(&quot;*** password: &quot;+password);
+	byte[] passwordBase64 = Base64.encodeBase64(password.getBytes());
+	String passwordUrlEncoded = new URLCodec().encode(new String(passwordBase64), &quot;UTF-8&quot;);
+	log.info(&quot;*** passwordUrlEncoded: &quot;+passwordUrlEncoded);
+	vars.put(&apos;credentials&apos;,&apos;&amp;username=&apos;+vars.get(&apos;userName&apos;)+&apos;&amp;password=&apos;+passwordUrlEncoded);
+} 
+/*else {
+	log.info(&quot;*** RandomVar One: &quot;+randomVar);
+	curTimestamp = &quot;${__timeShift(dd/MM/yyyy:HH:mm:ss,,-P1D,,)}&quot;;
+}*/
+
+// Credentials End
 </stringProp>
+            <stringProp name="TestPlan.comments">Variables: credentials, sourceIP, host, method, action</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get User Agent from list" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set - User Agent from list" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -146,7 +207,7 @@ getRandomVar(userAgentOptions,&apos;userAgent&apos;);
 </stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Weighted Variables" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set - Weighted Variables" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -202,7 +263,7 @@ getWeightedRandomVar(refererMap,&apos;httpReferer&apos;);
 </stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get Weighted URL from list" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Variable Set - Weighted URL from list" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -237,15 +298,15 @@ def uriPathMap = [
 ]
 
 getWeightedRandomVar(uriPathMap,&apos;uriPath&apos;);
-fullUri=&quot;/&quot;+ vars.get(&quot;uriPath&quot;)+&quot;?JSESSIONID=&quot;+vars.get(&quot;jSessionId&quot;);
-//log.info(&quot;fullUri: &quot;+ fullUri);
+fullUri=&quot;/&quot;+ vars.get(&quot;uriPath&quot;)+&quot;?JSESSIONID=&quot;+vars.get(&quot;jSessionId&quot;)+vars.get(&quot;credentials&quot;);
+log.info(&quot;fullUri: &quot;+ fullUri);
 vars.put(&apos;uriPath&apos;,fullUri);
 //vars.put(uriPath, &quot;/&quot;+ vars.get(&quot;uriPath&quot;)+&quot;&amp;JSESSIONID=&quot;+vars.get(&quot;jSessionId&quot;));
 
 </stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="post log to splunk HEC" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP POST log to splunk HEC" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -344,7 +405,7 @@ vars.put(&apos;uriPath&apos;,fullUri);
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Splunk Host Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Splunk Host Variables - Local" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="SPLUNK_HOST" elementType="Argument">
             <stringProp name="Argument.name">SPLUNK_HOST</stringProp>
@@ -358,7 +419,27 @@ vars.put(&apos;uriPath&apos;,fullUri);
           </elementProp>
           <elementProp name="HEC_TOKEN" elementType="Argument">
             <stringProp name="Argument.name">HEC_TOKEN</stringProp>
-            <stringProp name="Argument.value">9f7e62c2-8afb-46a9-a049-97edc6b835d3</stringProp>
+            <stringProp name="Argument.value">c74ca10e-a394-4e63-afa1-0d3d889282af</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Splunk Host Variables - AWS" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="SPLUNK_HOST" elementType="Argument">
+            <stringProp name="Argument.name">SPLUNK_HOST</stringProp>
+            <stringProp name="Argument.value">aws-ingest-actions</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="MGT_PORT" elementType="Argument">
+            <stringProp name="Argument.name">MGT_PORT</stringProp>
+            <stringProp name="Argument.value">8088</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="HEC_TOKEN" elementType="Argument">
+            <stringProp name="Argument.name">HEC_TOKEN</stringProp>
+            <stringProp name="Argument.value">dbe5596f-95ff-4a01-a68c-3a2f53881067</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
